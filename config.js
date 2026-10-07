@@ -4,7 +4,7 @@ window.SITE_CONFIG = {
   discordClientId: "1542629030791225494",
   // The guild a user must be in to see the "member" welcome.
   guildId: "1450318118047191072",
-  redirectUri: "https://eddylim95.github.io/wwm-site/",
+  redirectUri: "https://elpsare.github.io/wwm-site/",
 
   // Mirrors config/schedule.yaml in the bot repo (titles/times only). SGT, 24h.
   schedule: [

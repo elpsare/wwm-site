@@ -1,7 +1,7 @@
 # wwm-site
 
 Static guild hub for the WWM guild, served by GitHub Pages at
-https://eddylim95.github.io/wwm-site/.
+https://elpsare.github.io/wwm-site/.
 
 - **Login:** Discord OAuth2 implicit grant (`identify guilds`), entirely in the
   browser. No backend and no client secret. The token is kept in
@@ -17,7 +17,7 @@ Everything here is public. Don't add secrets, member IDs or roster lists.
 In the Developer Portal, under the bot's application → **OAuth2 → Redirects**,
 add the following URL exactly:
 
-    https://eddylim95.github.io/wwm-site/
+    https://elpsare.github.io/wwm-site/
 
 ## Local preview
 
