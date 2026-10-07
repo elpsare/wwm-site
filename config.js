@@ -4,7 +4,7 @@ window.SITE_CONFIG = {
   discordClientId: "1542629030791225494",
   redirectUri: "https://elpsare.github.io/wwm-site/",
   // The bot's profile API (bot/profile/web.py behind Caddy on the bot VM).
-  apiBase: "https://140-245-96-135.sslip.io/api",
+  apiBase: "https://140.245.96.135/api",
 
   // Mirrors config/schedule.yaml in the bot repo (titles/times only). SGT, 24h.
   schedule: [
