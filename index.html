@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WWM Guild Hub</title>
+  <meta name="description" content="Weekly raid, guild war and poll schedule for the WWM guild.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">⚔</span>
+      <span>WWM Guild Hub</span>
+    </div>
+    <div id="auth"></div>
+  </header>
+
+  <main>
+    <section id="welcome" class="card" hidden></section>
+
+    <section>
+      <h1>This week</h1>
+      <p class="muted">Times shown in <strong id="tz"></strong>. Guild times are fixed to SGT (GMT+8).</p>
+      <ol id="upcoming" class="events"></ol>
+    </section>
+
+    <section>
+      <h2>Weekly routine</h2>
+      <div id="routine" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="muted">
+    Sign-ups happen in Discord via RaidHelper. This page only reads your Discord name and server list. It stores nothing and posts nothing.
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
