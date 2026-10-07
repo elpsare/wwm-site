@@ -23,7 +23,7 @@ window.WWMAuth = (() => {
       client_id: cfg.discordClientId,
       response_type: "token",
       redirect_uri: cfg.redirectUri,
-      scope: "identify guilds",
+      scope: "identify",
       state,
       prompt: "none",
     });
@@ -75,12 +75,16 @@ window.WWMAuth = (() => {
     return r.json();
   }
 
+  // Login only proves who the user is (scope "identify"). Whether they're in
+  // the guild, and what they may see, is decided by the bot: /api/me.
   async function session(tok) {
-    const [user, guilds] = await Promise.all([
-      discord("/users/@me", tok),
-      discord("/users/@me/guilds", tok).catch(() => []),
-    ]);
-    return { user, guild: guilds.find((g) => g.id === cfg.guildId) || null };
+    return { user: await discord("/users/@me", tok) };
+  }
+
+  async function access(tok) {
+    const r = await fetch(`${cfg.apiBase}/me`, { headers: { Authorization: `Bearer ${tok}` } });
+    if (!r.ok) throw new Error(`/me: ${r.status}`);
+    return r.json(); // { member, officer, name }
   }
 
   function avatarUrl(u) {
@@ -115,5 +119,5 @@ window.WWMAuth = (() => {
     container.append(chip);
   }
 
-  return { login, logout, token, session, renderChip };
+  return { login, logout, token, session, access, renderChip };
 })();

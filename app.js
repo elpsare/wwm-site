@@ -12,26 +12,31 @@
   };
 
   // ---------- rendering ----------
-  function render(session) {
+  // access: the bot's answer from /api/me, or null if the bot couldn't be reached.
+  function render(session, access) {
     const welcome = $("welcome");
     welcome.replaceChildren();
     WWMAuth.renderChip($("auth"), session && session.user, () => render(null));
+    $("nav-roster").hidden = !(access && access.officer);
 
     if (!session) {
       welcome.hidden = true;
       return;
     }
 
-    const { user, guild } = session;
-    const name = user.global_name || user.username;
+    const name = session.user.global_name || session.user.username;
     welcome.hidden = false;
-    if (guild) {
+    if (!access) {
+      welcome.className = "card";
+      welcome.append(el("strong", null, `Hi ${name}.`),
+        el("span", "muted", " Couldn't reach the guild bot to check your membership. Try again in a minute."));
+    } else if (access.member) {
       welcome.className = "card ok";
       const link = el("a", null, "Fill in or update your guild profile");
       link.href = "profile.html";
       welcome.append(
-        el("strong", null, `Welcome back, ${name}.`),
-        el("span", null, ` You're a member of ${guild.name}. `),
+        el("strong", null, `Welcome back, ${access.name || name}.`),
+        el("span", null, " "),
         link,
         el("span", null, ", or see the schedule below."),
       );
@@ -107,15 +112,6 @@
     }));
   }
 
-  // The bot decides who is an officer; the Roster link is only a shortcut; the
-  // roster itself is refused by the API for everyone else.
-  function showRosterLinkIfOfficer(token) {
-    fetch(`${cfg.apiBase}/profile`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d && d.user.officer) $("nav-roster").hidden = false; })
-      .catch(() => {});
-  }
-
   // ---------- boot ----------
   renderSchedule();
   setInterval(renderSchedule, 60e3);
@@ -124,10 +120,8 @@
   render(null);
   if (token) {
     WWMAuth.session(token)
-      .then((s) => {
-        render(s);
-        if (s.guild) showRosterLinkIfOfficer(token);
-      })
+      .then((s) => WWMAuth.access(token)
+        .then((a) => render(s, a), () => render(s, null)))
       .catch(() => { WWMAuth.logout(); render(null); });
   }
 })();

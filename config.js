@@ -2,8 +2,6 @@
 window.SITE_CONFIG = {
   // Discord application (same app as the bot). OAuth2 > Redirects must list REDIRECT_URI exactly.
   discordClientId: "1542629030791225494",
-  // The guild a user must be in to see the "member" welcome.
-  guildId: "1450318118047191072",
   redirectUri: "https://elpsare.github.io/wwm-site/",
   // The bot's profile API (bot/profile/web.py behind Caddy on the bot VM).
   apiBase: "https://140-245-96-135.sslip.io/api",

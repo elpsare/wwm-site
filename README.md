@@ -3,10 +3,12 @@
 Static guild hub for the WWM guild, served by GitHub Pages at
 https://elpsare.github.io/wwm-site/.
 
-- **Login:** Discord OAuth2 implicit grant (`identify guilds`), entirely in the
+- **Login:** Discord OAuth2 implicit grant (`identify` only), entirely in the
   browser, with no client secret (`auth.js`). The token is kept in
   `sessionStorage`. Discord always redirects to the site root, which forwards
-  back to the page that started the login.
+  back to the page that started the login. Login only proves who someone is;
+  the bot decides membership and officer access (`/api/me`) from its own view
+  of the guild and its roles.
 - **Profile (`profile.html`):** members fill in the same questionnaire as
   `/profile setup`. The page sends the Discord token to the bot's API
   (`apiBase` in `config.js`, served by `bot/profile/web.py` behind Caddy on the
