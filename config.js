@@ -5,6 +5,8 @@ window.SITE_CONFIG = {
   // The guild a user must be in to see the "member" welcome.
   guildId: "1450318118047191072",
   redirectUri: "https://elpsare.github.io/wwm-site/",
+  // The bot's profile API (bot/profile/web.py behind Caddy on the bot VM).
+  apiBase: "https://140-245-96-135.sslip.io/api",
 
   // Mirrors config/schedule.yaml in the bot repo (titles/times only). SGT, 24h.
   schedule: [

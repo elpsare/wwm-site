@@ -1,8 +1,5 @@
 (() => {
   const cfg = window.SITE_CONFIG;
-  const API = "https://discord.com/api/v10";
-  const TOKEN_KEY = "wwm.discord.token";
-  const STATE_KEY = "wwm.discord.state";
   const DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   const KIND_LABEL = { signup: "Sign-ups", roster: "Roster", raid: "Raid", poll: "Poll", war: "Guild war" };
 
@@ -14,107 +11,29 @@
     return n;
   };
 
-  // ---------- storage (may be unavailable in private windows) ----------
-  const store = {
-    get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } },
-    set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} },
-    del(k) { try { sessionStorage.removeItem(k); } catch {} },
-  };
-
-  // ---------- Discord OAuth2 implicit grant ----------
-  function login() {
-    const state = crypto.getRandomValues(new Uint32Array(4)).join("-");
-    store.set(STATE_KEY, state);
-    const q = new URLSearchParams({
-      client_id: cfg.discordClientId,
-      response_type: "token",
-      redirect_uri: cfg.redirectUri,
-      scope: "identify guilds",
-      state,
-      prompt: "none",
-    });
-    location.href = `https://discord.com/oauth2/authorize?${q}`;
-  }
-
-  function logout() {
-    store.del(TOKEN_KEY);
-    render(null);
-  }
-
-  // Consume #access_token=... from the redirect, then scrub it from the URL.
-  function takeTokenFromHash() {
-    if (!location.hash.includes("access_token") && !location.hash.includes("error")) return null;
-    const p = new URLSearchParams(location.hash.slice(1));
-    history.replaceState(null, "", location.pathname + location.search);
-    const expected = store.get(STATE_KEY);
-    store.del(STATE_KEY);
-    if (p.get("error") || !p.get("access_token") || p.get("state") !== expected) return null;
-    const tok = {
-      value: p.get("access_token"),
-      expires: Date.now() + Number(p.get("expires_in") || 0) * 1000,
-    };
-    store.set(TOKEN_KEY, tok);
-    return tok;
-  }
-
-  function currentToken() {
-    const tok = takeTokenFromHash() || store.get(TOKEN_KEY);
-    if (!tok || tok.expires < Date.now()) { store.del(TOKEN_KEY); return null; }
-    return tok.value;
-  }
-
-  async function discord(path, token) {
-    const r = await fetch(API + path, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(`${path}: ${r.status}`);
-    return r.json();
-  }
-
-  async function loadSession(token) {
-    const [user, guilds] = await Promise.all([
-      discord("/users/@me", token),
-      discord("/users/@me/guilds", token).catch(() => []),
-    ]);
-    return { user, guild: guilds.find((g) => g.id === cfg.guildId) || null };
-  }
-
-  function avatarUrl(u) {
-    if (u.avatar) return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=64`;
-    const idx = Number((BigInt(u.id) >> 22n) % 6n);
-    return `https://cdn.discordapp.com/embed/avatars/${idx}.png`;
-  }
-
   // ---------- rendering ----------
   function render(session) {
-    const auth = $("auth");
     const welcome = $("welcome");
-    auth.replaceChildren();
     welcome.replaceChildren();
+    WWMAuth.renderChip($("auth"), session && session.user, () => render(null));
 
     if (!session) {
-      const btn = el("button", "btn discord", "Log in with Discord");
-      btn.onclick = login;
-      auth.append(btn);
       welcome.hidden = true;
       return;
     }
 
     const { user, guild } = session;
     const name = user.global_name || user.username;
-    const chip = el("div", "user");
-    const img = el("img");
-    img.src = avatarUrl(user);
-    img.alt = "";
-    const out = el("button", "btn ghost", "Log out");
-    out.onclick = logout;
-    chip.append(img, el("span", null, name), out);
-    auth.append(chip);
-
     welcome.hidden = false;
     if (guild) {
       welcome.className = "card ok";
+      const link = el("a", null, "Fill in or update your guild profile");
+      link.href = "profile.html";
       welcome.append(
         el("strong", null, `Welcome back, ${name}.`),
-        el("span", null, ` You're a member of ${guild.name}. See the schedule below and sign up in Discord.`),
+        el("span", null, ` You're a member of ${guild.name}. `),
+        link,
+        el("span", null, ", or see the schedule below."),
       );
     } else {
       welcome.className = "card warn";
@@ -188,15 +107,27 @@
     }));
   }
 
+  // The bot decides who is an officer; the Roster link is only a shortcut; the
+  // roster itself is refused by the API for everyone else.
+  function showRosterLinkIfOfficer(token) {
+    fetch(`${cfg.apiBase}/profile`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && d.user.officer) $("nav-roster").hidden = false; })
+      .catch(() => {});
+  }
+
   // ---------- boot ----------
   renderSchedule();
   setInterval(renderSchedule, 60e3);
 
-  const token = currentToken();
+  const token = WWMAuth.token();
   render(null);
   if (token) {
-    loadSession(token)
-      .then(render)
-      .catch(() => { store.del(TOKEN_KEY); render(null); });
+    WWMAuth.session(token)
+      .then((s) => {
+        render(s);
+        if (s.guild) showRosterLinkIfOfficer(token);
+      })
+      .catch(() => { WWMAuth.logout(); render(null); });
   }
 })();

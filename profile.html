@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guild Profile</title>
+  <meta name="description" content="Fill in or update your WWM guild member profile.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">⚔</span>
+      <span>WWM Guild Hub</span>
+    </div>
+    <nav class="nav"><a href="./">Schedule</a><a href="profile.html" aria-current="page">My profile</a><a href="roster.html" id="nav-roster" hidden>Roster</a></nav>
+    <div id="auth"></div>
+  </header>
+
+  <main>
+    <h1>My guild profile</h1>
+    <p class="muted">The same questionnaire as <code>/profile setup</code> in Discord. Changes here show up there, and the reverse. Each section has its own Save button.</p>
+    <section id="status" class="card"></section>
+    <div id="profile"></div>
+  </main>
+
+  <footer class="muted">
+    Your answers are saved by the guild bot and are visible to officers. Screenshots are still uploaded in Discord with <code>/profile screenshot</code>.
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

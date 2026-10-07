@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guild Roster</title>
+  <meta name="description" content="Officer view of every WWM guild member profile.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">⚔</span>
+      <span>WWM Guild Hub</span>
+    </div>
+    <nav class="nav"><a href="./">Schedule</a><a href="profile.html">My profile</a><a href="roster.html" id="nav-roster" aria-current="page">Roster</a></nav>
+    <div id="auth"></div>
+  </header>
+
+  <main>
+    <h1>Guild roster</h1>
+    <p class="muted">Every member's profile. Only officers can open this page. Everyone else can only see their own profile.</p>
+    <section id="status" class="card"></section>
+
+    <div id="tools" class="tools" hidden>
+      <input id="q" type="search" placeholder="Search name, IGN or weapon" aria-label="Search">
+      <select id="interest" aria-label="Interest">
+        <option value="">All interests</option>
+        <option value="gvg">Guild War (GvG)</option>
+        <option value="pve">Skyward Bond / Speedruns</option>
+        <option value="social">Casual / Social</option>
+      </select>
+      <select id="state" aria-label="Status">
+        <option value="">Complete or not</option>
+        <option value="done">Complete</option>
+        <option value="todo">Incomplete</option>
+        <option value="gone">Left the server</option>
+      </select>
+    </div>
+    <p id="count" class="muted"></p>
+    <div id="roster" class="roster"></div>
+  </main>
+
+  <footer class="muted">
+    Read-only. Officers edit someone else's profile in Discord with <code>/profile edit</code>.
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="roster.js"></script>
+</body>
+</html>
