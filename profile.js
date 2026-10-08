@@ -12,9 +12,9 @@
     social: ["Casual/Social (Movies, Games, etc.)"],
   };
   const WHY_OPTIONAL = {
-    gvg: "You didn't pick Guild War. Open it anyway to add GvG builds.",
-    pve: "You didn't pick Skyward Bond or Speedruns. Open it anyway to add PvE builds.",
-    social: "You didn't pick Casual/Social. Open it to rate events and join the buddy system.",
+    gvg: "You didn't pick Guild War, so this page is optional. Fill it in anyway if you join GvG.",
+    pve: "You didn't pick Skyward Bond or Speedruns, so this page is optional. Fill it in anyway to add PvE builds.",
+    social: "You didn't pick Casual/Social, so this page is optional. Fill it in to rate events and join the buddy system.",
   };
   // Which of the server's "still to do" items belong to each section.
   const GENERAL_MISSING = ["ign", "age range", "devices", "content interests"];
@@ -50,7 +50,6 @@
   }
   const ICON = {
     check: () => icon(["M20 6 9 17l-5-5"], { size: 14, width: 3 }),
-    chevron: () => icon(["m6 9 6 6 6-6"], { size: 20 }),
     plus: () => icon(["M12 5v14", "M5 12h14"], { width: 2.2 }),
     star: () => icon(["m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"], { size: 14, fill: true }),
     info: () => icon(["M12 16v-4", "M12 8h.01", "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"], { size: 20, width: 1.8 }),
@@ -59,6 +58,7 @@
   let token = null;
   let data = null; // last API payload: { user, member, builds, missing, options }
   let editing = null; // id of the build whose editor is open
+  let current = null; // id of the section on screen (one section per page)
   const statusEls = {}; // section id -> its header status element
 
   // ---------- API ----------
@@ -131,9 +131,9 @@
     // section rail
     $("rail").replaceChildren(...SECTIONS.map((s, i) => {
       const st = statusOf(s.id);
-      const a = el("a", `is-${st.kind}`);
+      const a = el("a", `is-${st.kind}${s.id === current ? " is-active" : ""}`);
       a.href = `#${s.id}`;
-      a.onclick = () => { const d = $(s.id); if (d) d.open = true; };
+      if (s.id === current) a.setAttribute("aria-current", "page");
       const mark = el("span", "pf-mark", st.kind === "done" ? "" : String(i + 1));
       mark.setAttribute("aria-hidden", "true");
       if (st.kind === "done") mark.append(ICON.check());
@@ -143,6 +143,12 @@
       a.append(mark, text);
       return a;
     }));
+
+    // On phones the rail is a sideways chip row: keep the current chip in view.
+    const active = $("rail").querySelector(".is-active");
+    if (active && $("rail").scrollWidth > $("rail").clientWidth) {
+      $("rail").scrollLeft = active.offsetLeft - 16;
+    }
 
     // section headers
     for (const [id, node] of Object.entries(statusEls)) {
@@ -292,31 +298,35 @@
     const btn = el("button", "btn primary", label);
     btn.type = "button";
     btn.onclick = () => save(btn, note, onSave);
-    const dirty = () => { note.className = "pf-note dirty"; note.textContent = "Unsaved changes"; };
+    // Builds have their own Save button, so their edits don't dirty the section.
+    const dirty = (e) => {
+      if (e.target.closest(".pf-builds")) return;
+      note.className = "pf-note dirty";
+      note.textContent = "Unsaved changes";
+    };
     scope.addEventListener("input", dirty);
     scope.addEventListener("change", dirty);
     bar.append(note, btn);
     return bar;
   }
 
-  // A collapsible section card; needed ones start open.
+  // One section = one page of the form.
   function sectionCard(id) {
     const s = SECTIONS.find((x) => x.id === id);
-    const d = el("details", "pf-card");
-    d.id = id;
-    d.open = wanted(id);
-    const sum = el("summary");
+    const card = el("section", "pf-card");
+    card.id = `sec-${id}`;
+    card.setAttribute("aria-labelledby", `h-${id}`);
+    const head = el("div", "pf-card-head");
     const h = el("h2", null, s.title);
     h.id = `h-${id}`;
+    h.tabIndex = -1;
     const status = el("span");
     statusEls[id] = status;
-    const chev = el("span", "pf-chev");
-    chev.append(ICON.chevron());
-    sum.append(h, status, chev);
-    if (!wanted(id)) sum.append(el("p", "pf-why", WHY_OPTIONAL[id]));
+    head.append(h, status);
+    if (!wanted(id)) head.append(el("p", "pf-why", WHY_OPTIONAL[id]));
     const body = el("div", "pf-body");
-    d.append(sum, body);
-    return { card: d, body };
+    card.append(head, body);
+    return { card, body };
   }
 
   // ---------- sections ----------
@@ -339,13 +349,10 @@
       field("What do you want to play with the guild?", interests,
         { hint: "This decides which sections you need to fill in." }),
       saveBar(body, "Save general", async () => {
-        const before = data.member.content_interests.join("|");
         await api("PATCH", "/profile", {
           ign: ign.value, region: region.read(), age_range: age.read(),
           devices: devices.read(), content_interests: interests.read(),
         });
-        // Interests decide which sections are needed - redraw the others.
-        if (data.member.content_interests.join("|") !== before) renderSections({ keep: "general" });
       }),
     );
     return card;
@@ -473,7 +480,7 @@
     head.append(el("h3", null, `Your ${cat === "gvg" ? "GvG" : "PvE"} builds`),
       builds.length
         ? el("span", "pf-note", `${builds.length} build${builds.length > 1 ? "s" : ""}`)
-        : el("span", "pf-note dirty", "Add at least one"));
+        : el("span", "pf-note todo", "Add at least one"));
     wrap.replaceChildren(head);
     for (const b of builds) wrap.append(b.id === editing ? buildEditor(b) : buildRow(b));
 
@@ -684,13 +691,59 @@
     return ed;
   }
 
-  // ---------- page states ----------
-  function renderSections({ keep } = {}) {
-    const keepEl = keep ? $(keep) : null;
-    const builders = { general: generalSection, gvg: gvgSection, pve: pveSection, social: socialSection };
-    $("profile").replaceChildren(...SECTIONS.map((s) => (s.id === keep && keepEl ? keepEl : builders[s.id]())));
-    refreshStatus();
+  // ---------- pages ----------
+  const BUILDERS = { general: generalSection, gvg: gvgSection, pve: pveSection, social: socialSection };
+  const hasUnsaved = () => !!document.querySelector("#profile .pf-note.dirty");
+
+  // Start on the first needed section with something left to do.
+  function defaultSection() {
+    const todo = SECTIONS.find((s) => wanted(s.id) && statusOf(s.id).kind === "todo");
+    return (todo || SECTIONS[0]).id;
   }
+
+  function pager(id) {
+    const i = SECTIONS.findIndex((s) => s.id === id);
+    const nav = el("nav", "pf-pager");
+    nav.setAttribute("aria-label", "Section pages");
+    const prev = SECTIONS[i - 1], next = SECTIONS[i + 1];
+    const link = (s, dir) => {
+      const a = el("a", `btn ${dir === "next" ? "primary" : "secondary"}`);
+      a.href = `#${s.id}`;
+      a.textContent = dir === "next" ? `Next: ${s.name} →` : `← ${s.name}`;
+      return a;
+    };
+    nav.append(prev ? link(prev, "prev") : el("span"),
+      el("span", "pf-note", `Page ${i + 1} of ${SECTIONS.length}`),
+      next ? link(next, "next") : el("span"));
+    return nav;
+  }
+
+  function showSection(id, { focus = false } = {}) {
+    current = id;
+    editing = null;
+    for (const k of Object.keys(statusEls)) delete statusEls[k];
+    $("profile").replaceChildren(BUILDERS[id](), pager(id));
+    refreshStatus();
+    if (focus) {
+      if ($("layout").getBoundingClientRect().top < 0) $("layout").scrollIntoView({ block: "start" });
+      $(`h-${id}`).focus({ preventScroll: true });
+    }
+  }
+
+  // The URL hash picks the page, so Back/Forward and shared links work.
+  function onHashChange() {
+    const id = location.hash.slice(1);
+    if (!BUILDERS[id] || id === current) return;
+    if (hasUnsaved() && !confirm("You have unsaved changes in this section. Leave without saving?")) {
+      history.replaceState(null, "", `#${current}`);
+      return;
+    }
+    showSection(id, { focus: true });
+  }
+  window.addEventListener("hashchange", onHashChange);
+  window.addEventListener("beforeunload", (e) => {
+    if (hasUnsaved()) { e.preventDefault(); e.returnValue = ""; }
+  });
 
   function showMessage(kind, ...parts) {
     const box = $("status");
@@ -720,7 +773,10 @@
       $("nav-roster").hidden = !data.user.officer;
       $("status").hidden = true;
       $("layout").hidden = false;
-      renderSections();
+      const fromUrl = location.hash.slice(1);
+      const first = BUILDERS[fromUrl] ? fromUrl : defaultSection();
+      history.replaceState(null, "", `#${first}`);
+      showSection(first);
     } catch (e) {
       if (WWMAuth.token()) showMessage("warn", el("span", null, e.message === "Failed to fetch"
         ? "Couldn't reach the guild bot. It may be restarting, so try again in a minute."

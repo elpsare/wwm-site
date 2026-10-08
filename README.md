@@ -36,3 +36,9 @@ add the following URL exactly:
 
 To log in locally, also add `http://localhost:8000/` as a redirect and
 temporarily set `redirectUri` in `config.js` to that URL.
+
+## Releasing
+
+Pages caches files for up to 10 minutes. When a change touches `style.css` or
+any `.js` file, bump the `?v=` tag on their links in all three HTML pages so
+visitors never get new HTML with old scripts.
