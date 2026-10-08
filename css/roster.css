@@ -1,0 +1,41 @@
+/* Officer roster: filters, member rows and their expanded details. */
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.tools[hidden] { display: none; }
+.tools input, .tools select { width: auto; flex: 1 1 180px; max-width: none; }
+
+.roster { display: grid; gap: 8px; margin-bottom: 24px; }
+.member { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+.member > summary {
+  cursor: pointer; list-style: none; padding: 10px 14px;
+  display: grid; grid-template-columns: minmax(150px, 1.2fr) 2fr auto; gap: 12px; align-items: center;
+}
+.member > summary::-webkit-details-marker { display: none; }
+.member[open] > summary { border-bottom: 1px solid var(--border); }
+.who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.who img { width: 32px; height: 32px; border-radius: 50%; flex: none; }
+.names { display: flex; flex-direction: column; min-width: 0; }
+.names > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.names .muted { font-size: 13px; }
+.glance { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 13.5px; min-width: 0; }
+.pill-tag { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; border: 1px solid currentColor; white-space: nowrap; }
+.pill-tag.done { color: var(--ok); }
+.pill-tag.todo { color: var(--warn); }
+.pill-tag.gone { color: var(--muted); }
+
+.member-body { padding: 4px 14px 14px; }
+.member-body h4 { margin: 16px 0 6px; }
+.facts { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; margin: 0; font-size: 14px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.build { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-top: 10px; background: var(--bg); }
+.build .facts { margin-top: 6px; }
+.build-head { display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 12px; font-weight: 700; color: var(--accent); }
+
+@media (max-width: 640px) {
+  .member > summary { grid-template-columns: 1fr auto; }
+  .glance { grid-column: 1 / -1; grid-row: 2; }
+  .facts { grid-template-columns: 1fr; gap: 0; }
+  .facts dd { margin-bottom: 6px; }
+}
