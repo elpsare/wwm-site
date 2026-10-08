@@ -1,7 +1,7 @@
 // The parts every page shares: the header's login chip and Roster link, and a
 // status card for "log in" / "loading" / error messages.
-import { $, el } from "./dom.js?v=202610080737";
-import * as auth from "./auth.js?v=202610080737";
+import { $, el } from "./dom.js?v=202610080831";
+import * as auth from "./auth.js?v=202610080831";
 
 // Header chip: "Log in" button, or avatar + name + "Log out".
 export function renderUserChip(user, { onLogout } = {}) {
@@ -33,9 +33,10 @@ export function loginButton() {
   return btn;
 }
 
-// The Roster link is only a shortcut; the bot refuses the roster to non-officers.
-export function showRosterLink(visible) {
-  $("nav-roster").hidden = !visible;
+// Officer-only nav links (Roster, Responses) are only shortcuts; the bot
+// refuses their data to everyone else.
+export function showOfficerLinks(visible) {
+  for (const a of document.querySelectorAll(".nav .officer-only")) a.hidden = !visible;
 }
 
 // A page that needs a logged-in member. Returns the Discord token, or null

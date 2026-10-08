@@ -1,6 +1,6 @@
 // The questionnaire's sections and how complete each one is. Pure functions
 // over the bot's profile payload ({ member, builds, missing, options }).
-import { isInterestedIn } from "../../core/guild.js?v=202610080737";
+import { isInterestedIn } from "../../core/guild.js?v=202610080831";
 
 // One section = one page of the form, in this order.
 export const SECTIONS = [

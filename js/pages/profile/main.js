@@ -6,13 +6,13 @@
 //   sections.js  the four section pages
 //   builds.js    build list + inline editor
 //   progress.js  progress card, section rail, header status
-import { $, el } from "../../core/dom.js?v=202610080737";
-import { botApi } from "../../core/api.js?v=202610080737";
-import { memberPage, showRosterLink } from "../../core/shell.js?v=202610080737";
-import { SECTIONS, defaultSection } from "./model.js?v=202610080737";
-import { SECTION_VIEWS } from "./sections.js?v=202610080737";
-import { renderProgress } from "./progress.js?v=202610080737";
-import { hasUnsavedIn } from "./widgets.js?v=202610080737";
+import { $, el } from "../../core/dom.js?v=202610080831";
+import { botApi } from "../../core/api.js?v=202610080831";
+import { memberPage, showOfficerLinks } from "../../core/shell.js?v=202610080831";
+import { SECTIONS, defaultSection } from "./model.js?v=202610080831";
+import { SECTION_VIEWS } from "./sections.js?v=202610080831";
+import { renderProgress } from "./progress.js?v=202610080831";
+import { hasUnsavedIn } from "./widgets.js?v=202610080831";
 
 const page = memberPage({
   loginText: "Log in with Discord to see and edit your profile.",
@@ -99,7 +99,7 @@ async function boot() {
     page.fail(err);
     return;
   }
-  showRosterLink(ctx.data.user.officer);
+  showOfficerLinks(ctx.data.user.officer);
   page.hideMessage();
   $("layout").hidden = false;
   const fromUrl = location.hash.slice(1);

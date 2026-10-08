@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com; connect-src https://discord.com https://140.245.96.135; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>WWM Guild Hub</title>
-  <meta name="description" content="Weekly raid, guild war and poll schedule for the WWM guild.">
+  <title>Member Responses</title>
+  <meta name="description" content="Officer table of every guild member's answers, with sorting, filters and search.">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap">
   <link rel="stylesheet" href="css/base.css?v=202610080831">
-  <link rel="stylesheet" href="css/schedule.css?v=202610080831">
+  <link rel="stylesheet" href="css/responses.css?v=202610080831">
 </head>
 <body>
   <header class="top">
@@ -18,29 +18,28 @@
       <svg class="logo" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"></path><path d="m13 19 6-6"></path><path d="m16 16 4 4"></path><path d="m19 21 2-2"></path></svg>
       <span>WWM Guild Hub</span>
     </div>
-    <nav class="nav"><a href="./" aria-current="page">Schedule</a><a href="profile.html">My profile</a><a href="roster.html" class="officer-only" hidden>Roster</a><a href="responses.html" class="officer-only" hidden>Responses</a></nav>
+    <nav class="nav"><a href="./">Schedule</a><a href="profile.html">My profile</a><a href="roster.html" class="officer-only" hidden>Roster</a><a href="responses.html" class="officer-only" aria-current="page">Responses</a></nav>
     <div id="auth"></div>
   </header>
 
-  <main>
-    <section id="welcome" class="card" hidden></section>
-
-    <section>
-      <h1>This week</h1>
-      <p class="muted">Times shown in <strong id="tz"></strong>. Guild times are fixed to SGT (GMT+8).</p>
-      <ol id="upcoming" class="events"></ol>
-    </section>
-
-    <section>
-      <h2>Weekly routine</h2>
-      <div id="routine" class="grid"></div>
-    </section>
+  <main class="wide">
+    <h1>Member responses</h1>
+    <p class="muted">Everyone's questionnaire answers in one table. Click a column to sort, filter or search to narrow it down, and share the address to share the view. Only officers can open this page.</p>
+    <section id="status" class="card" hidden></section>
+    <div id="tools" class="tools" hidden></div>
+    <p id="count" class="muted"></p>
+    <div id="table-wrap" class="table-wrap" hidden>
+      <table class="responses">
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
   </main>
 
-  <footer class="muted">
-    Sign-ups happen in Discord via RaidHelper. Logging in only reads your Discord name and avatar. Only the profile page saves anything, and only what you submit there.
+  <footer class="muted wide">
+    Read-only. Open the Roster for a member's full profile, or edit it in Discord with <code>/profile edit</code>.
   </footer>
 
-  <script type="module" src="js/pages/schedule.js?v=202610080831"></script>
+  <script type="module" src="js/pages/responses.js?v=202610080831"></script>
 </body>
 </html>

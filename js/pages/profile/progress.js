@@ -1,7 +1,7 @@
 // Everything that reflects completion: the progress card, the section rail,
 // and the status chip in the open section's header. Redrawn after every save.
-import { $, el, ICON } from "../../core/dom.js?v=202610080737";
-import { SECTIONS, isNeeded, sectionStatus } from "./model.js?v=202610080737";
+import { $, el, ICON } from "../../core/dom.js?v=202610080831";
+import { SECTIONS, isNeeded, sectionStatus } from "./model.js?v=202610080831";
 
 function renderProgressCard(data) {
   const needed = SECTIONS.filter((s) => isNeeded(data, s.id));

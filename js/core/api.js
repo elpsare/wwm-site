@@ -1,7 +1,7 @@
 // Client for the bot's web API (bot/profile/web.py). Every call sends the
 // visitor's Discord token; the bot checks who it belongs to, that they're in
 // the guild, and (for the roster) that they're an officer.
-import { CONFIG } from "../config.js?v=202610080737";
+import { CONFIG } from "../config.js?v=202610080831";
 
 export class ApiError extends Error {
   constructor(message, status) {

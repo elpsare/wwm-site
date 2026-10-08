@@ -35,4 +35,20 @@ export function screenshotSummary(build, options) {
     .join(" · ");
 }
 
+export const mainBuild = (member, category) =>
+  member.builds.find((b) => b.category === category && b.is_main) || null;
+
+// Roster member status: { kind: "gone" | "todo" | "done", text, rank }.
+// rank orders them for sorting (most attention needed first).
+export function memberStatus(m) {
+  if (!m.in_guild) return { kind: "gone", text: "Left server", rank: 2 };
+  if (m.missing.length) return { kind: "todo", text: `${m.missing.length} to do`, rank: 0 };
+  return { kind: "done", text: "Complete", rank: 1 };
+}
+
+// Matches the roster/table "status" filter values.
+export function hasStatus(m, wanted) {
+  return !wanted || memberStatus(m).kind === wanted;
+}
+
 export const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;

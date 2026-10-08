@@ -15,9 +15,12 @@ https://elpsare.github.io/wwm-site/.
   bot VM). The bot checks who the token belongs to and that they're in the
   guild, then saves to its roster database. Option lists come from the bot, so
   there is nothing to keep in sync here.
-- **Roster (`roster.html`):** read-only view of every profile, for officers
-  only (the bot's `/profileadmin` officer roles). The API refuses everyone else,
-  so hiding the nav link is only cosmetic.
+- **Roster (`roster.html`) and Responses (`responses.html`):** read-only views
+  of every profile, for officers only (the bot's `/profileadmin` officer roles).
+  The roster shows one card per member; Responses is a sortable, filterable,
+  searchable table whose filters live in the URL so a view can be shared. Both
+  use `/api/roster`, which the bot refuses to everyone else, so hiding the nav
+  links is only cosmetic.
 - **Schedule:** hand-mirrored from `config/schedule.yaml` in the private bot
   repo (titles and times only). Edit `js/data/schedule.js` when the bot schedule changes.
 
@@ -52,7 +55,8 @@ Plain HTML, CSS and ES modules; no build step.
     js/core/guild.js      guild rules shared by pages (interests, builds, labels)
     js/core/shell.js      header login chip, Roster link, status/login messages
     js/pages/schedule.js  home page
-    js/pages/roster.js    officer roster
+    js/pages/roster.js    officer roster (one card per member)
+    js/pages/responses.js officer table of all answers: sort, filter, search
     js/pages/profile/     profile page:
       main.js             page controller (paging by URL hash, loading, saving state)
       model.js            sections and completion rules (no DOM)

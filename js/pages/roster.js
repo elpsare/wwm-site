@@ -1,11 +1,11 @@
 // Officer roster: every member's profile, read-only. The bot refuses the data
 // to anyone who isn't an officer.
-import { $, el } from "../core/dom.js?v=202610080737";
-import { botApi } from "../core/api.js?v=202610080737";
-import { memberPage, showRosterLink } from "../core/shell.js?v=202610080737";
+import { $, el } from "../core/dom.js?v=202610080831";
+import { botApi } from "../core/api.js?v=202610080831";
+import { memberPage, showOfficerLinks } from "../core/shell.js?v=202610080831";
 import {
-  isInterestedIn, martialArtsOf, screenshotSummary, shortLabel, weaponsOf,
-} from "../core/guild.js?v=202610080737";
+  hasStatus, isInterestedIn, mainBuild, martialArtsOf, memberStatus, screenshotSummary, shortLabel, weaponsOf,
+} from "../core/guild.js?v=202610080831";
 
 const RATING = { Like: "👍", Neutral: "😐", Dislike: "👎" };
 const list = (a) => (a && a.length ? a.map(shortLabel).join(", ") : "—");
@@ -103,16 +103,14 @@ function memberCard(m) {
     el("span", "muted", m.ign ? m.name : ""));
   who.append(names);
 
-  const main = (cat) => m.builds.find((b) => b.category === cat && b.is_main);
   const glance = el("div", "glance");
-  for (const [label, b] of [["GvG", main("gvg")], ["PvE", main("pve")]]) {
+  for (const [label, b] of [["GvG", mainBuild(m, "gvg")], ["PvE", mainBuild(m, "pve")]]) {
     glance.append(el("span", null, `${label}: ${b ? b.summary.replace("★ ", "") : "—"}`));
   }
   glance.prepend(el("span", null, m.region || "—"));
 
-  const status = !m.in_guild ? el("span", "pill-tag gone", "Left server")
-    : m.missing.length ? el("span", "pill-tag todo", `${m.missing.length} to do`)
-      : el("span", "pill-tag done", "Complete");
+  const st = memberStatus(m);
+  const status = el("span", `pill-tag ${st.kind}`, st.text);
   sum.append(who, glance, status);
   d.append(sum);
 
@@ -134,12 +132,7 @@ function matches(m) {
   }
   const interest = $("interest").value;
   if (interest && !isInterestedIn(m.content_interests, interest)) return false;
-  switch ($("state").value) {
-    case "done": return m.in_guild && !m.missing.length;
-    case "todo": return m.in_guild && m.missing.length > 0;
-    case "gone": return !m.in_guild;
-    default: return true;
-  }
+  return hasStatus(m, $("state").value);
 }
 
 function renderList() {
@@ -173,7 +166,7 @@ async function boot() {
     }
     return;
   }
-  showRosterLink(true);
+  showOfficerLinks(true);
   renderSummary();
   $("tools").hidden = false;
   for (const id of ["q", "interest", "state"]) $(id).addEventListener("input", renderList);

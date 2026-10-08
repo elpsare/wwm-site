@@ -4,7 +4,7 @@
 // Discord redirects back to the site root only (one registered redirect), so
 // the page that started the login is remembered and the root forwards there
 // once the token has been taken from the URL.
-import { CONFIG } from "../config.js?v=202610080737";
+import { CONFIG } from "../config.js?v=202610080831";
 
 const DISCORD_API = "https://discord.com/api/v10";
 const TOKEN_KEY = "wwm.discord.token";

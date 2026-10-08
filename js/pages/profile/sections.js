@@ -1,13 +1,13 @@
 // The four questionnaire pages. Each view builds its card from ctx.data and
 // saves its own fields; builds (GvG/PvE) save separately via builds.js.
-import { el } from "../../core/dom.js?v=202610080737";
-import { shortLabel } from "../../core/guild.js?v=202610080737";
-import { WHY_OPTIONAL, isNeeded, sectionById } from "./model.js?v=202610080737";
-import { renderSectionStatus } from "./progress.js?v=202610080737";
-import { buildsBlock } from "./builds.js?v=202610080737";
+import { el } from "../../core/dom.js?v=202610080831";
+import { shortLabel } from "../../core/guild.js?v=202610080831";
+import { WHY_OPTIONAL, isNeeded, sectionById } from "./model.js?v=202610080831";
+import { renderSectionStatus } from "./progress.js?v=202610080831";
+import { buildsBlock } from "./builds.js?v=202610080831";
 import {
   callout, chips, field, optionCards, saveBar, segmented, textInput, twoColumns, yesNo,
-} from "./widgets.js?v=202610080737";
+} from "./widgets.js?v=202610080831";
 
 // The rules notes are shared with the Discord wizard, which uses a dropdown.
 const ruleNote = (text) => callout(text.replace(" in the acknowledgement dropdown", " under Acknowledgement"));

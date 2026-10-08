@@ -4,6 +4,7 @@
 
 /* ---------- tokens ---------- */
 :root {
+  color-scheme: light dark;   /* native scrollbars and controls follow the theme */
   --bg: #f6f5f2;
   --surface: #ffffff;
   --surface-2: #f0eee9;
@@ -96,8 +97,8 @@ code { font-size: 13px; background: var(--bg); border: 1px solid var(--border); 
 }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
 .logo { color: var(--accent); flex: none; }
-.nav { display: flex; gap: 4px; margin-right: auto; }
-.nav a { color: var(--muted); text-decoration: none; padding: 10px 12px; border-radius: 10px; font-weight: 600; font-size: 14px; }
+.nav { display: flex; gap: 4px; margin-right: auto; overflow-x: auto; scrollbar-width: none; }
+.nav a { white-space: nowrap; color: var(--muted); text-decoration: none; padding: 10px 12px; border-radius: 10px; font-weight: 600; font-size: 14px; }
 .nav a:hover { color: var(--text); }
 .nav a[aria-current="page"] { color: var(--text); background: var(--surface-2); }
 .nav a[hidden] { display: none; }
@@ -123,6 +124,12 @@ code { font-size: 13px; background: var(--bg); border: 1px solid var(--border); 
 .card.ok { background: var(--ok-bg); }
 .card.warn { background: var(--warn-bg); }
 .card[hidden] { display: none; }
+
+/* member status pill (roster, responses) */
+.pill-tag { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; border: 1px solid currentColor; white-space: nowrap; }
+.pill-tag.done { color: var(--ok); }
+.pill-tag.todo { color: var(--warn); }
+.pill-tag.gone { color: var(--muted); }
 
 /* ---------- forms ---------- */
 select, input[type="text"], input[type="search"], textarea {

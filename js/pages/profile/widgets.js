@@ -1,8 +1,8 @@
 // Form controls for the profile page. Each group control is a real radio or
 // checkbox set (keyboard and screen readers work natively) and exposes
 // `.read()` returning its current value.
-import { el, nextId, ICON } from "../../core/dom.js?v=202610080737";
-import { splitLabel } from "../../core/guild.js?v=202610080737";
+import { el, nextId, ICON } from "../../core/dom.js?v=202610080831";
+import { splitLabel } from "../../core/guild.js?v=202610080831";
 
 function choiceInputs(wrap, options, isChecked, multi, render) {
   const name = nextId("g");

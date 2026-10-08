@@ -1,11 +1,11 @@
 // Home page: this week's guild schedule in the visitor's time zone, plus a
 // welcome card once they're logged in.
-import { CONFIG } from "../config.js?v=202610080737";
-import { SCHEDULE } from "../data/schedule.js?v=202610080737";
-import { $, el } from "../core/dom.js?v=202610080737";
-import * as auth from "../core/auth.js?v=202610080737";
-import { botApi } from "../core/api.js?v=202610080737";
-import { renderUserChip, showRosterLink } from "../core/shell.js?v=202610080737";
+import { CONFIG } from "../config.js?v=202610080831";
+import { SCHEDULE } from "../data/schedule.js?v=202610080831";
+import { $, el } from "../core/dom.js?v=202610080831";
+import * as auth from "../core/auth.js?v=202610080831";
+import { botApi } from "../core/api.js?v=202610080831";
+import { renderUserChip, showOfficerLinks } from "../core/shell.js?v=202610080831";
 
 const DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 const WEEK = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -16,7 +16,7 @@ const KIND_LABEL = { signup: "Sign-ups", roster: "Roster", raid: "Raid", poll: "
 function renderWelcome(user, access) {
   const welcome = $("welcome");
   welcome.replaceChildren();
-  showRosterLink(!!(access && access.officer));
+  showOfficerLinks(!!(access && access.officer));
   if (!user) {
     welcome.hidden = true;
     return;

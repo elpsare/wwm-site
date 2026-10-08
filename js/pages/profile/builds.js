@@ -1,10 +1,10 @@
 // A section's builds: one summary row per build, and an inline editor for the
 // one being edited (ctx.editing). Each build saves on its own.
-import { el, ICON } from "../../core/dom.js?v=202610080737";
-import { martialArtsOf, plural, screenshotSummary, weaponKeys, weaponsOf } from "../../core/guild.js?v=202610080737";
+import { el, ICON } from "../../core/dom.js?v=202610080831";
+import { martialArtsOf, plural, screenshotSummary, weaponKeys, weaponsOf } from "../../core/guild.js?v=202610080831";
 import {
   button, chips, field, liveNote, runSave, segmented, select, textInput, trackDirty, twoColumns,
-} from "./widgets.js?v=202610080737";
+} from "./widgets.js?v=202610080831";
 
 const CATEGORY = {
   gvg: { short: "GvG", eyebrow: "Guild War build" },
