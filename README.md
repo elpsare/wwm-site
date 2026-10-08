@@ -1,6 +1,6 @@
 # wwm-site
 
-Static guild hub for the WWM guild, served by GitHub Pages at
+Static guild hub for the OnlyBuns guild (Where Winds Meet), served by GitHub Pages at
 https://elpsare.github.io/wwm-site/.
 
 - **Login:** Discord OAuth2 implicit grant (`identify` only), entirely in the
